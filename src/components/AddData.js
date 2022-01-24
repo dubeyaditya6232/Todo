@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Form, Label, Input, Button, FormFeedback, FormGroup } from 'reactstrap';
 import axios from 'axios';
 
-function AddData({ list, setList, id, setId, state, setState }) {
+function AddData({ list, setList, id, setId, state, setState,setFilteredResult,setIsFiltered }) {
 
     const [touched, setTouched] = useState({
         description: false,
@@ -47,37 +47,47 @@ function AddData({ list, setList, id, setId, state, setState }) {
     function handleSubmit(e) {
         e.preventDefault();
         let check = e.target.lastElementChild.name;
-        let data = { description: state.description, name: state.name }
+        let data = { 
+            description: state.description, 
+            name: state.name,
+            priority:state.priority,
+         };
         if (check === 'Edit') {
+            data.modifiedAt=new Date();
+            data.id=id;
             axios.patch(`http://localhost:3000/data/${id}`, data)
                 .then(res => {
                     error = Object.assign({}, initialErrorState);
                     setTouched({ ...touched, description: false, name: false })
                     setList([...list]);
-                    setState({ name: '', description: '' });
+                    setState({ name: '', description: '',priority:'Low' });
+                    setFilteredResult([data]);
                     setId(-1);
                 })
                 .catch(err => { console.log(err); })
         }
         else if (check === 'Submit') {
+            data.createdAt=new Date();
+            data.modifiedAt=new Date();
             axios.post('http://localhost:3000/data', data)
                 .then(res => {
                     error = Object.assign({}, initialErrorState);
                     setTouched({ ...touched, description: false, name: false })
                     setList([...list, data]);
-                    setState({ name: '', description: '' });
+                    setState({ name: '', description: '',priority:'Low' });
+                    setIsFiltered(false);
                 })
                 .catch(err => { console.log(err); })
         }
     }
 
     return (
-        <>
+        <div className="container">
             {validate(state.description, state.name)}
-            <h3 className="text-center">Add Data</h3>
+            <h3 className="text-center">Add Task</h3>
             <Form onSubmit={handleSubmit} className="formgroup">
                 <FormGroup>
-                    <Label htmlFor="name">Name</Label>
+                    <Label htmlFor="name">Task</Label>
                     <Input
                         type="text"
                         value={state.name}
@@ -92,9 +102,9 @@ function AddData({ list, setList, id, setId, state, setState }) {
                     <FormFeedback>{error.maxLengthName}</FormFeedback>
                 </FormGroup>
                 <FormGroup>
-                    <Label htmlFor="description">Description</Label>
+                    <Label htmlFor="description">Task Description</Label>
                     <Input
-                        type="text"
+                        type="textarea"
                         value={state.description}
                         valid={error.description === ''}
                         invalid={error.description !== ''}
@@ -104,9 +114,22 @@ function AddData({ list, setList, id, setId, state, setState }) {
                     />
                     <FormFeedback>{error.description}</FormFeedback>
                 </FormGroup>
+                <FormGroup>
+                    <Label htmlFor="priority">Priority</Label>
+                    <Input
+                        type="select"
+                        name="priority"
+                        value={state.priority}
+                        onChange={(e) => handleChange(e)}
+                    >
+                        <option value="Low">Low</option>
+                        <option value="Medium">Medium</option>
+                        <option value="High">High</option>
+                    </Input>
+                </FormGroup>
                 <Button type="submit" name={(id === -1) ? "Submit" : "Edit"} color="primary" >Submit</Button>
             </Form>
-        </>
+        </div>
     );
 }
 

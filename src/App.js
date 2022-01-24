@@ -1,26 +1,39 @@
-import React from 'react';
+import React, { useState} from 'react';
 import NotFound from './components/NotFound';
 import Details from './components/Details';
 import Main from './components/MainComponent';
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
-import { Provider } from 'react-redux'
-import { configureStore } from './redux/configureStore';
-
-const store = configureStore();
+import { Paper, CssBaseline } from '@mui/material';
+import { createTheme, ThemeProvider, } from '@mui/material/styles';
 
 function App() {
+  const [isDark, setIsDark] = useState(false);
+
+  const theme = createTheme({
+    palette: {
+      mode: !isDark ? 'light' : 'dark',
+    }
+  });
 
   return (
-    <Provider store={store}>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Navigate to="/home" />} />
-          <Route exact path="/home" element={<Main />} />
-          <Route exact path="/details" element={<Details />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </Provider>
+    <ThemeProvider theme={theme}>
+      <Paper elevation={0}>
+        <CssBaseline />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Navigate to="/home" />} />
+            <Route
+              exact path="/home"
+              element={<Main
+                isDark={isDark}
+                setIsDark={setIsDark}
+              />} />
+            <Route exact path="/details" element={<Details isDark={isDark} setIsDark={setIsDark} />} />
+            <Route path="*" element={<NotFound isDark={isDark} setIsDark={setIsDark} />} />
+          </Routes>
+        </BrowserRouter>
+      </Paper>
+    </ThemeProvider>
   );
 }
 
