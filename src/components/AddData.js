@@ -82,7 +82,7 @@ function AddData({ list, setList, id, setId, state, setState,setFilteredResult,s
     }
 
     return (
-        <div className="container">
+        <div className="container addData">
             {validate(state.description, state.name)}
             <h3 className="text-center">Add Task</h3>
             <Form onSubmit={handleSubmit} className="formgroup">

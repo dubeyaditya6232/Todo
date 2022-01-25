@@ -1,9 +1,13 @@
 import React from 'react';
 import Header from './Header/Header';
 
-function Details() {
+function Details({ isDark, setIsDark }) {
   return <div>
-     <Header list={[]}/>
+    <Header
+      list={[]}
+      isDark={isDark}
+      setIsDark={setIsDark}
+    />
     <h1>Details</h1>
   </div>;
 }

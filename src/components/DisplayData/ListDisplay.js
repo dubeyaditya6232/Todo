@@ -16,10 +16,10 @@ function listDisplay({ list, handleClick, handleDelete }) {
                                         <p><b>Description : </b><i>{item.description}</i></p>
                                     </Grid>
                                     <Grid item xs={12} sm={4}>
-                                        <Button variant='contained' color='success' onClick={() => handleClick(item)} >Edit</Button>
+                                        <Button sx={{width:70}} variant='contained' color='success' onClick={() => handleClick(item)} >Edit</Button>
                                         <br />
                                         <br />
-                                        <Button variant='contained' color="secondary" onClick={() => handleDelete(item)} >Delete</Button>
+                                        <Button sx={{width:70}} variant='contained' color="secondary" onClick={() => handleDelete(item)} >Delete</Button>
                                     </Grid>
                                 </Grid>
                                 <hr />

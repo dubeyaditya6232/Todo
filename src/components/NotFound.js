@@ -1,9 +1,13 @@
 import Header from './Header/Header';
 
-function NotFound(){
-    return(
+function NotFound({ isDark, setIsDark }) {
+    return (
         <div>
-            <Header list={[]}/>
+            <Header
+                list={[]}
+                isDark={isDark}
+                setIsDark={setIsDark}
+            />
             <h1>Not Found</h1>
         </div>
     )

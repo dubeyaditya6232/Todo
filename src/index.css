@@ -1,5 +1,6 @@
 
 .displayData{
+    padding: 5px;
     margin-top: 10px;
     margin-bottom: 10px;
     border: 1px solid black;
@@ -8,6 +9,12 @@
     height:auto;
     min-height: 20vh;
     max-height:80vh;
+}
+.addData{
+    padding: 5px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border: 1px solid black;
 }
 
 .dispHrLine{

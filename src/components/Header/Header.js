@@ -7,7 +7,6 @@ function Header({ list, isDark, setIsDark, setIsFiltered, setfilteredResult }) {
 
     const [isOpen, setIsOpen] = useState(false);
     const [search, setSearch] = useState(null);
-    const [checked, setChecked] = useState(false);
 
     function toggleNav() {
         setIsOpen(!isOpen);
@@ -26,7 +25,6 @@ function Header({ list, isDark, setIsDark, setIsFiltered, setfilteredResult }) {
     }
 
     const toggleDarkMode = () => {
-        setChecked(!checked);
         setIsDark(!isDark);
     }
 
@@ -39,7 +37,7 @@ function Header({ list, isDark, setIsDark, setIsFiltered, setfilteredResult }) {
                     <Nav className='ms-auto' navbar>
                         <NavItem>
                             <Tooltip title="Dark Mode">
-                                <Switch checked={checked} onClick={toggleDarkMode} />
+                                <Switch checked={isDark} onClick={toggleDarkMode} />
                             </Tooltip>
                         </NavItem>
                         <NavItem>
@@ -47,8 +45,7 @@ function Header({ list, isDark, setIsDark, setIsFiltered, setfilteredResult }) {
                                 <span className="fa fa-home fa-lg"></span> Home
                             </NavLink>
                         </NavItem>
-
-                        <NavItem>
+                        {/*                         <NavItem>
                             <NavLink className="nav-link" to="/aboutus">
                                 <span className="fa fa-info fa-lg"></span> About us
                             </NavLink>
@@ -64,8 +61,7 @@ function Header({ list, isDark, setIsDark, setIsFiltered, setfilteredResult }) {
                             <NavLink className="nav-link" to="/contactus">
                                 <span className="fa fa-address-card fa-lg"></span> Contact us
                             </NavLink>
-                        </NavItem>
-
+                        </NavItem> */}
                         <Autocomplete
                             disablePortal
                             id='search'
