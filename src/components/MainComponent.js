@@ -3,7 +3,12 @@ import ShowData from './DisplayData/ShowData';
 import AddData from './AddData';
 import Header from './Header/Header';
 import { Grid } from '@mui/material';
-import axios from 'axios';
+
+import { navBarSearch,useAuth } from '../useContext';
+
+//firebase stuff
+import { db } from '../firebase/firebase';
+import { collection, onSnapshot, query,where } from 'firebase/firestore';
 
 function Main({ isDark, setIsDark }) {
 
@@ -13,58 +18,67 @@ function Main({ isDark, setIsDark }) {
   const [id, setId] = useState(-1);
   const [list, setList] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState(null);
+
+  const { user } = useAuth();
+
+  const fetchData = () => {
+    const collectionRef=collection(db, "Task");
+    const q=query(collectionRef ,where("userId", "==", user.uid));
+    return onSnapshot(q, (snapshot) => {
+      const data = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setList([...data]);
+      setLoading(false);
+      setSearch(null);
+      setIsFiltered(false);
+    });
+  }
+
 
   useEffect(() => {
-    setTimeout(() => {
-      axios.get('http://localhost:3000/data')
-        .then(res => {
-          if (JSON.stringify(res.data) !== JSON.stringify(list)) {
-            setList(res.data);
-            setLoading(false);
-          }
-        })
-        .catch(err => { console.log(err); })
-    }, 2000);
-  }, [list]);
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
-    <div className="App">
-      <Header
-        list={list}
-        isDark={isDark}
-        setIsDark={setIsDark}
-        setIsFiltered={setIsFiltered}
-        setfilteredResult={setfilteredResult}
-      />
-      <Grid container>
-        <Grid item xs={12} md={6}>
-          <ShowData
-            list={list}
-            setList={setList}
-            state={state}
-            setState={setState}
-            setId={setId}
-            isFiltered={isFiltered}
-            filteredResult={filteredResult}
-            setfilteredResult={setfilteredResult}
-            loading={loading}
-            setIsLoading={setLoading}
-          />
+    <navBarSearch.Provider value={{ search, setSearch }}>
+      <div className="App">
+        <Header
+          list={list}
+          isDark={isDark}
+          setIsDark={setIsDark}
+          setIsFiltered={setIsFiltered}
+          setfilteredResult={setfilteredResult}
+        />
+        <Grid container>
+          <Grid item xs={12} md={6}>
+            <ShowData
+              list={list}
+              state={state}
+              setState={setState}
+              setId={setId}
+              isFiltered={isFiltered}
+              filteredResult={filteredResult}
+              setfilteredResult={setfilteredResult}
+              loading={loading}
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <AddData
+              state={state}
+              setState={setState}
+              id={id}
+              setId={setId}
+              setFilteredResult={setfilteredResult}
+              setIsFiltered={setIsFiltered}
+            />
+          </Grid>
         </Grid>
-        <Grid item xs={12} md={6}>
-          <AddData
-            list={list}
-            setList={setList}
-            state={state}
-            setState={setState}
-            id={id}
-            setId={setId}
-            setFilteredResult={setfilteredResult}
-            setIsFiltered={setIsFiltered}
-          />
-        </Grid>
-      </Grid>
-    </div>
+      </div>
+    </navBarSearch.Provider>
   );
 }
 

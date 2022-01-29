@@ -1,19 +1,26 @@
 import React, { useState } from "react";
 import { Form, Label, Input, Button, FormFeedback, FormGroup } from 'reactstrap';
-import axios from 'axios';
+import {db} from '../firebase/firebase';
+import { addDoc, collection, doc, updateDoc } from 'firebase/firestore'
 
-function AddData({ list, setList, id, setId, state, setState,setFilteredResult,setIsFiltered }) {
+import {useAuth} from '../useContext';
+
+function AddData({ id, setId, state, setState, setFilteredResult, setIsFiltered }) {
 
     const [touched, setTouched] = useState({
         description: false,
         name: false
     })
 
+    const {user} = useAuth();
+
+    const[submitBtnError,setSubmitBtnError] = useState('');
+
     let initialErrorState = {
         description: '',
         name: '',
         minLengthName: '',
-        maxLengthName: ''
+        maxLengthName: '',
     }
 
     let error = Object.assign({}, initialErrorState);
@@ -44,40 +51,53 @@ function AddData({ list, setList, id, setId, state, setState,setFilteredResult,s
 
     }
 
+    const addData = async (data) => {
+        const collectionRef = collection(db, 'Task');
+        await addDoc(collectionRef, data)
+            .then(() => {
+                error = Object.assign({}, initialErrorState);
+                setTouched({ ...touched, description: false, name: false })
+                setState({ name: '', description: '', priority: 'Low' });
+                setIsFiltered(false);
+            })
+            .catch(err => { console.log(err) });
+    }
+
+    const editData = async (data, id) => {
+        const docRef = doc(db, "Task", id)
+        await updateDoc(docRef, data)
+            .then(() => {
+                error = Object.assign({}, initialErrorState);
+                setTouched({ ...touched, description: false, name: false })
+                setState({ name: '', description: '', priority: 'Low' });
+                setFilteredResult([data]);
+                setId(-1);
+            })
+            .catch(err => { console.log(err) });
+    }
+
     function handleSubmit(e) {
         e.preventDefault();
+        setSubmitBtnError('');
         let check = e.target.lastElementChild.name;
-        let data = { 
-            description: state.description, 
+        if(state.name==='' || state.description===''){
+            setSubmitBtnError('Please fill all the fields*');
+            return;
+        }
+        let data = {
+            description: state.description,
             name: state.name,
-            priority:state.priority,
-         };
+            priority: state.priority?state.priority:'Low',
+            userId: user.uid,
+        };
         if (check === 'Edit') {
-            data.modifiedAt=new Date();
-            data.id=id;
-            axios.patch(`http://localhost:3000/data/${id}`, data)
-                .then(res => {
-                    error = Object.assign({}, initialErrorState);
-                    setTouched({ ...touched, description: false, name: false })
-                    setList([...list]);
-                    setState({ name: '', description: '',priority:'Low' });
-                    setFilteredResult([data]);
-                    setId(-1);
-                })
-                .catch(err => { console.log(err); })
+            data.modifiedAt = new Date();
+            editData(data, id);
         }
         else if (check === 'Submit') {
-            data.createdAt=new Date();
-            data.modifiedAt=new Date();
-            axios.post('http://localhost:3000/data', data)
-                .then(res => {
-                    error = Object.assign({}, initialErrorState);
-                    setTouched({ ...touched, description: false, name: false })
-                    setList([...list, data]);
-                    setState({ name: '', description: '',priority:'Low' });
-                    setIsFiltered(false);
-                })
-                .catch(err => { console.log(err); })
+            data.createdAt = new Date();
+            data.modifiedAt = new Date();
+            addData(data);
         }
     }
 
@@ -128,6 +148,7 @@ function AddData({ list, setList, id, setId, state, setState,setFilteredResult,s
                     </Input>
                 </FormGroup>
                 <Button type="submit" name={(id === -1) ? "Submit" : "Edit"} color="primary" >Submit</Button>
+                {(submitBtnError!=='') ? <p className="text-danger">{submitBtnError}</p> : ''}
             </Form>
         </div>
     );

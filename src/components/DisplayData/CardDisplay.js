@@ -10,7 +10,7 @@ function cardDisplay({ list, handleClick, handleDelete }) {
                     {list.map((item, index) => {
                         return (
                             <Grid item key={item.id} xs={12} sm={6} md={5}>
-                                <Card className="cardDisplay" key={item.id}>
+                                <Card className="cardDisplay">
                                     <CardContent>
                                         <h4 className="text-center">Task #{index+1}</h4>
                                         <Typography variant="h6" component="h2">Task : {item.name}</Typography>

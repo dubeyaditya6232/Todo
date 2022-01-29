@@ -1,4 +1,3 @@
-import axios from 'axios';
 import React, { useState } from 'react';
 import CardDisplay from './CardDisplay';
 import ListDisplay from './ListDisplay';
@@ -9,7 +8,10 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { Typography, Box } from '@mui/material';
 
-function ShowData({ list, setList, setId, setState, state, isFiltered, filteredResult, setfilteredResult, loading, setIsLoading }) {
+import { deleteDoc, doc } from 'firebase/firestore'
+import {db} from '../../firebase/firebase';
+
+function ShowData({ list,setId, setState, state, isFiltered, filteredResult, setfilteredResult, loading }) {
 
     const [isOpen, setIsOpen] = useState(false);
     const [componentType, setComponentType] = useState(null);
@@ -38,15 +40,19 @@ function ShowData({ list, setList, setId, setState, state, isFiltered, filteredR
         setComponentType(e.currentTarget.id);
     }
 
-    function handleDelete(item) {
-        let items = [...result];
-        axios.delete(`http://localhost:3000/data/${item.id}`)
-            .then(res => {
-                items.splice(items.indexOf(item.id), 1);
-                setList(items);
+    const deleteData = async (items, id) => {
+        const docRef = doc(db, "Task", id);
+        await deleteDoc(docRef)
+            .then(() => {
+                items.splice(items.indexOf(id), 1);
                 setfilteredResult(items);
             })
-            .catch(err => { console.log(err); })
+            .catch(err => { console.log(err) })
+    }
+
+    function handleDelete(item) {
+        let items = [...result];
+        deleteData(items, item.id);
     }
 
     return (
@@ -95,7 +101,6 @@ function ShowData({ list, setList, setId, setState, state, isFiltered, filteredR
                     />
                 )
             )}
-            { }
         </div>
     );
 }
