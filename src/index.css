@@ -25,3 +25,8 @@
 .cardDisplay{
     min-width: 250px;
 }
+
+.rounded-circle{
+    height: 30px;
+    width: 30px;
+}

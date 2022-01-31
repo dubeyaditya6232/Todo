@@ -1,16 +1,15 @@
 import React, { useContext, useState } from 'react';
 import { Navbar, Nav, NavItem, NavbarBrand, Collapse, NavbarToggler } from 'reactstrap';
 import { NavLink } from 'react-router-dom';
-import { Autocomplete, TextField, Switch, Tooltip} from '@mui/material';
+import { Autocomplete, TextField, Switch, Tooltip, Button } from '@mui/material';
 
 import { navBarSearch } from '../../useContext';
-
 
 function Header({ list, isDark, setIsDark, setIsFiltered, setfilteredResult }) {
 
     const [isOpen, setIsOpen] = useState(false);
 
-    const navSearch=useContext(navBarSearch);
+    const navSearch = useContext(navBarSearch);
 
     function toggleNav() {
         setIsOpen(!isOpen);
@@ -34,16 +33,18 @@ function Header({ list, isDark, setIsDark, setIsFiltered, setfilteredResult }) {
 
     return (
         <div>
-        <Navbar className={isDark ? "navbar-dark" : "navbar-light"} color={isDark ? "dark" : "light"} expand="md">
-            {/* <Navbar className={isDark ? "navbar-dark" : "navbar-light"} color={isDark ? "dark" : "light"} {...(isDark) ? "dark" : "light"} expand="md"> */}
+            <Navbar className={isDark ? "navbar-dark" : "navbar-light"} color={isDark ? "dark" : "light"} expand="md">
+                {/* <Navbar className={isDark ? "navbar-dark" : "navbar-light"} color={isDark ? "dark" : "light"} {...(isDark) ? "dark" : "light"} expand="md"> */}
                 <NavbarBrand className='me-auto' href="/">ToDo</NavbarBrand>
                 <NavbarToggler className='mb-2 me-0' onClick={() => toggleNav()} />
                 <Collapse isOpen={isOpen} navbar>
                     <Nav className='ms-auto' navbar>
                         <NavItem>
-                            <Tooltip title="Dark Mode">
-                                <Switch checked={isDark} onClick={toggleDarkMode} />
-                            </Tooltip>
+                            <Button>
+                                <Tooltip title="Dark Mode">
+                                    <Switch checked={isDark} onClick={toggleDarkMode} />
+                                </Tooltip>
+                            </Button>
                         </NavItem>
                         <NavItem>
                             <NavLink className="nav-link" to="/home">
@@ -67,6 +68,11 @@ function Header({ list, isDark, setIsDark, setIsFiltered, setfilteredResult }) {
                                 <span className="fa fa-address-card fa-lg"></span> Contact us
                             </NavLink>
                         </NavItem> */}
+                        <NavItem>
+                            <NavLink className="nav-link" to="/profile">
+                                <img src="https://via.placeholder.com/150" alt="profile" className="rounded-circle" />
+                            </NavLink>
+                        </NavItem>
                         <Autocomplete
                             disablePortal
                             id='search'
