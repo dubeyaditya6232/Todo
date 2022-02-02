@@ -8,6 +8,7 @@ import { createTheme, ThemeProvider, } from '@mui/material/styles';
 import Login from './components/Login';
 import { useAuth, UserAuthContext } from './useContext';
 import Loading from './components/Loading';
+import Profile from './components/Profile';
 
 function CheckAuthentication() {
   const { user } = useAuth();
@@ -36,10 +37,11 @@ function App() {
         <BrowserRouter>
           <UserAuthContext>
             <Routes>
-              <Route path="/" element={<Navigate to="/home" />} />
+              {/* <Route path="/" element={<Navigate to="/home" />} /> */}
               <Route exact path="/login" element={<Login />} />
-              <Route exact path="/home" element={<CheckAuthentication />} >
-                <Route path="" element={<Main isDark={isDark} setIsDark={setIsDark} />} />
+              <Route exact path="/" element={<CheckAuthentication />} >
+                <Route path="home" element={<Main isDark={isDark} setIsDark={setIsDark} />} />
+                <Route path="me" element={<Profile isDark={isDark} setIsDark={setIsDark} />} />
               </Route>
               <Route exact path="/details" element={<Details isDark={isDark} setIsDark={setIsDark} />} />
               <Route path="*" element={<NotFound isDark={isDark} setIsDark={setIsDark} />} />

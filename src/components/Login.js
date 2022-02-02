@@ -12,7 +12,6 @@ function Login() {
         try {
             if (!user) {
                 const result = await googleSignIn();
-                //console.log(result);
                 const data={
                     name: result.user.displayName,
                     email: result.user.email,
@@ -39,8 +38,10 @@ function Login() {
     }
     return (
         <>
+            <div className="container">
             <h3>You are not logged in</h3>
             <button onClick={(e) => login(e)}>Login</button>
+            </div>
         </>
     );
 }

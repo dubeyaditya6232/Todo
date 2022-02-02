@@ -1,15 +1,32 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Navbar, Nav, NavItem, NavbarBrand, Collapse, NavbarToggler } from 'reactstrap';
 import { NavLink } from 'react-router-dom';
-import { Autocomplete, TextField, Switch, Tooltip, Button } from '@mui/material';
-
-import { navBarSearch } from '../../useContext';
+import { Autocomplete, TextField, Switch, Tooltip, Box } from '@mui/material';
+import { useLocation } from 'react-router-dom'
+import { navBarSearch, useAuth } from '../../useContext';
 
 function Header({ list, isDark, setIsDark, setIsFiltered, setfilteredResult }) {
 
     const [isOpen, setIsOpen] = useState(false);
+    const [windowSize, setWindowSize] = useState({ width: window.innerWidth, height: window.innerHeight });
 
     const navSearch = useContext(navBarSearch);
+    const { user } = useAuth();
+
+    const location = useLocation();
+
+    useEffect(() => {
+
+        const handleResize = () => {
+            setWindowSize({ width: window.innerWidth, height: window.innerHeight });
+        }
+
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        }
+    }, [])
 
     function toggleNav() {
         setIsOpen(!isOpen);
@@ -40,57 +57,46 @@ function Header({ list, isDark, setIsDark, setIsFiltered, setfilteredResult }) {
                 <Collapse isOpen={isOpen} navbar>
                     <Nav className='ms-auto' navbar>
                         <NavItem>
-                            <Button>
+                            <Box sx={{ flex: 1 }}>
+                                {(windowSize.width <= 768) ? "Dark Mode" : ""}
                                 <Tooltip title="Dark Mode">
                                     <Switch checked={isDark} onClick={toggleDarkMode} />
                                 </Tooltip>
-                            </Button>
+                            </Box>
                         </NavItem>
                         <NavItem>
                             <NavLink className="nav-link" to="/home">
                                 <span className="fa fa-home fa-lg"></span> Home
                             </NavLink>
                         </NavItem>
-                        {/*                         <NavItem>
-                            <NavLink className="nav-link" to="/aboutus">
-                                <span className="fa fa-info fa-lg"></span> About us
-                            </NavLink>
-                        </NavItem>
-
                         <NavItem>
-                            <NavLink className="nav-link" to="/details">
-                                <span className="fa fa-list fa-lg"></span> Details
-                            </NavLink>
+                            <Box>
+                                <NavLink className="nav-link" to="/me">
+                                    {(windowSize.width <= 768) ? "Profile  " : ""}
+                                    <img src={user.photoURL} alt="profile" className="round_image rounded-circle" />
+                                </NavLink>
+                            </Box>
                         </NavItem>
-
-                        <NavItem>
-                            <NavLink className="nav-link" to="/contactus">
-                                <span className="fa fa-address-card fa-lg"></span> Contact us
-                            </NavLink>
-                        </NavItem> */}
-                        <NavItem>
-                            <NavLink className="nav-link" to="/profile">
-                                <img src="https://via.placeholder.com/150" alt="profile" className="rounded-circle" />
-                            </NavLink>
-                        </NavItem>
-                        <Autocomplete
-                            disablePortal
-                            id='search'
-                            value={navSearch.search}
-                            onChange={(event, newValue) => {
-                                handleChange(newValue);
-                            }}
-                            options={(list?.length > 0) ? list : []}
-                            sx={{ width: 250, borderRadius: '10px' }}
-                            getOptionLabel={option => `${option.name}`}
-                            renderInput={(params) => <TextField
-                                {...params}
-                                label="Search"
-                                size='small'
-                                variant="filled"
-                            />}
-                        >
-                        </Autocomplete>
+                        {(location.pathname === "/me") ? (" ") : (
+                            <Autocomplete
+                                disablePortal
+                                id='search'
+                                value={navSearch.search}
+                                onChange={(event, newValue) => {
+                                    handleChange(newValue);
+                                }}
+                                options={(list?.length > 0) ? list : []}
+                                sx={{ width: 250, borderRadius: '10px' }}
+                                getOptionLabel={option => `${option.name}`}
+                                renderInput={(params) => <TextField
+                                    {...params}
+                                    label="Search"
+                                    size='small'
+                                    variant="filled"
+                                />}
+                            >
+                            </Autocomplete>
+                        )}
                     </Nav>
                 </Collapse>
             </Navbar>
