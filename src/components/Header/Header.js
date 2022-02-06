@@ -65,10 +65,15 @@ function Header({ list, isDark, setIsDark, setIsFiltered, setfilteredResult }) {
                             </Box>
                         </NavItem>
                         <NavItem>
-                            <NavLink className="nav-link" to="/home">
+                            <NavLink className="nav-link" to="/">
                                 <span className="fa fa-home fa-lg"></span> Home
                             </NavLink>
                         </NavItem>
+                        {/* <NavItem>
+                            <NavLink className="nav-link" to="/details">
+                                <span className="fa fa-about fa-lg"></span> Details
+                            </NavLink>
+                        </NavItem> */}
                         <NavItem>
                             <Box>
                                 <NavLink className="nav-link" to="/me">
@@ -77,7 +82,7 @@ function Header({ list, isDark, setIsDark, setIsFiltered, setfilteredResult }) {
                                 </NavLink>
                             </Box>
                         </NavItem>
-                        {(location.pathname === "/me") ? (" ") : (
+                        {(location.pathname === "/home") ? (
                             <Autocomplete
                                 disablePortal
                                 id='search'
@@ -96,7 +101,7 @@ function Header({ list, isDark, setIsDark, setIsFiltered, setfilteredResult }) {
                                 />}
                             >
                             </Autocomplete>
-                        )}
+                        ) : (" ")}
                     </Nav>
                 </Collapse>
             </Navbar>

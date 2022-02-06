@@ -29,3 +29,9 @@
     height: 30px;
     width: 30px;
 }
+
+.Details_Add_CloseBtn{
+    display: flex;
+    flex:1;
+    justify-content: flex-end;
+}

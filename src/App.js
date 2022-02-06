@@ -37,14 +37,13 @@ function App() {
         <BrowserRouter>
           <UserAuthContext>
             <Routes>
-              {/* <Route path="/" element={<Navigate to="/home" />} /> */}
-              <Route exact path="/login" element={<Login />} />
-              <Route exact path="/" element={<CheckAuthentication />} >
-                <Route path="home" element={<Main isDark={isDark} setIsDark={setIsDark} />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/" element={<CheckAuthentication />} >
+                <Route path="" element={<Main isDark={isDark} setIsDark={setIsDark} />} />
                 <Route path="me" element={<Profile isDark={isDark} setIsDark={setIsDark} />} />
+                <Route path="details" element={<Details isDark={isDark} setIsDark={setIsDark} />} />
               </Route>
-              <Route exact path="/details" element={<Details isDark={isDark} setIsDark={setIsDark} />} />
-              <Route path="*" element={<NotFound isDark={isDark} setIsDark={setIsDark} />} />
+              <Route path="*" element={<NotFound />} />
             </Routes>
           </UserAuthContext>
         </BrowserRouter>

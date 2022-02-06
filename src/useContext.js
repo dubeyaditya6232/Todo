@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,useLocation } from "react-router-dom";
 
 import { onAuthStateChanged, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth } from './firebase/authentication';
@@ -11,7 +11,7 @@ export const navBarSearch = createContext({ search: null, setSearch: () => { } }
 const userAuth = createContext();
 
 export function UserAuthContext({ children }) {
-
+    const location=useLocation();
     const [user, setUser] = useState(null);
 
     const navigate = useNavigate();
@@ -23,7 +23,8 @@ export function UserAuthContext({ children }) {
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
             if (!currentUser) {
-                navigate("/login");
+                localStorage.removeItem("user");
+                navigate(`${location.pathname}`);
             }
             else {
                 if (localStorage.getItem("user")===JSON.stringify(currentUser)) {
@@ -38,7 +39,7 @@ export function UserAuthContext({ children }) {
                 }
                 localStorage.setItem("user", JSON.stringify(currentUser));
                 setUser(currentUser);
-                navigate("/home");
+                navigate(`${location.pathname}`);
             }
         });
 
